@@ -1,0 +1,93 @@
+services:
+  db:
+    image: postgres:17
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    volumes:
+      - app-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=sanjog1234
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=app
+    networks:
+    - backend-network
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: ["CMD", "mongo", "--username", "root", "--password", "example", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - backend-network
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - mongo
+    volumes:
+      - ./gateway:/app
+    ports:
+      - 8081:8081
+    networks:
+    - frontend-network
+    - backend-network
+    environment:
+      MONGO_URL: "mongodb://root:example@mongo:27017"
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    volumes:
+      - ./auth-service:/app
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    environment:
+      - SECRET_KEY=ybLV4-5nkCwys4WoKZ3Wvpclb8AA6q4CU3jT2_OCIAU
+      - POSTGRES_SERVER=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=sanjog1234
+    networks:
+    - backend-network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 5173:5173
+    networks:
+    - frontend-network
+
+volumes:
+  app-db-data:
+
+networks:
+  frontend-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
