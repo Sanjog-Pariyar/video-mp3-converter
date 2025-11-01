@@ -5,10 +5,11 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
 from app.config import settings
 
 import gridfs
-
 import httpx
-
 import io
+import json
+
+from app.queue.produce import publish_to_queue
 
 
 router = APIRouter(prefix='/media', tags=["media"])
@@ -53,7 +54,15 @@ async def upload(
         video_bytes = await video_file.read()
         # Save video in GridFS asynchronously
         video_id = await video_bucket.upload_from_stream(video_file.filename, io.BytesIO(video_bytes))
-        return response.json()
+        user_details = response.json()
+        print(user_details, "adsd12312@@!@")
+        message = {
+            "video_fid": str(video_id),
+            "mp3_fid": None,
+            "username": user_details["email"]
+        }
+        publish_to_queue(message)
+        return message
     else:
         try:
             error_detail = response.json()

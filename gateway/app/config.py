@@ -5,5 +5,6 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file='.env')
 
     MONGO_URL: str
+    RABBITMQ_URL: str
     
 settings = Settings()
