@@ -77,7 +77,7 @@ The app supports user authentication, background processing via message queues, 
 
 ## 🧭 Architecture Diagram
 
-[![Diagram](docs/App_lifecycle.png.png)]
+[![Diagram](docs/App_lifecycle.png)]
 
 ---
 
