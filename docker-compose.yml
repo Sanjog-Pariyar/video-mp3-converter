@@ -3,7 +3,7 @@ services:
     image: postgres:17
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d app"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       retries: 5
       start_period: 30s
@@ -11,21 +11,21 @@ services:
     volumes:
       - app-db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=sanjog1234
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=app
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_DB=${POSTGRES_DB?Variable not set}
     networks:
     - backend-network
   mongo:
     image: mongo
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME?Variable not set}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD?Variable not set}
     ports:
       - 27017:27017
     healthcheck:
-      test: ["CMD", "mongo", "--username", "root", "--password", "example", "--eval", "db.adminCommand('ping')"]
+      test: CMD-SHELL mongo --username "$$MONGO_INITDB_ROOT_USERNAME" --password "$$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "db.adminCommand('ping')" || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
@@ -60,8 +60,8 @@ services:
     - frontend-network
     - backend-network
     environment:
-      - MONGO_URL=mongodb://root:example@mongo:27017
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - MONGO_URL=${MONGO_URL?Variable not set}
+      - RABBITMQ_URL=${RABBITMQ_URL?Variable not set}
   auth-service:
     build:
       context: ./auth-service
@@ -73,12 +73,13 @@ services:
         condition: service_healthy
         restart: true
     environment:
-      - SECRET_KEY=ybLV4-5nkCwys4WoKZ3Wvpclb8AA6q4CU3jT2_OCIAU
-      - POSTGRES_SERVER=db
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=app
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=sanjog1234
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
+      - POSTGRES_SERVER=${POSTGRES_SERVER?Variable not set}
+      - POSTGRES_PORT=${POSTGRES_PORT?Variable not set}
+      - POSTGRES_DB=${POSTGRES_DB?Variable not set}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+    command: bash scripts/start.sh
     networks:
     - backend-network
   frontend:
@@ -104,11 +105,26 @@ services:
     volumes:
       - ./converter-service:/app
     environment:
-      - MONGO_URL=mongodb://root:example@mongo:27017
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - MONGO_URL=${MONGO_URL?Variable not set}
+      - RABBITMQ_URL=${RABBITMQ_URL?Variable not set}
     depends_on:
       rabbitmq:
         condition: service_healthy
+    networks:
+    - backend-network
+  email-service:
+    build:
+      context: ./email-service
+      dockerfile: Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ./email-service:/app
+      - /app/node_modules
+    environment:
+      - RABBITMQ_URL=${RABBITMQ_URL?Variable not set}
+      - NODEMAILER_KEY=${NODEMAILER_KEY?Variable not set}
     networks:
     - backend-network
 
