@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8081";
+const API_URL = "/gateway";
 
 export interface LoginResponse {
   access_token: string;

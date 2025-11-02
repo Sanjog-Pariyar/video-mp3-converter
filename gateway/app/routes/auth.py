@@ -6,9 +6,11 @@ from app.schemas import UserRegister
 
 router = APIRouter(prefix='/user', tags=["users"])
 
+auth_service="http://auth-service:8000"
+
 @router.post('/register')
 async def register(user_in: UserRegister):
-    register_url = "http://auth-service:8000/users/signup"
+    register_url = f"{auth_service}/users/signup"
 
     async with httpx.AsyncClient() as client:
         try:
@@ -51,7 +53,7 @@ async def login(email: str = Form(...), password: str = Form(...)):
     """
 
     # Internal Docker network URL for auth-service
-    login_url = "http://auth-service:8000/login/access-token"
+    login_url = f"{auth_service}/login/access-token"
 
     # Prepare OAuth2PasswordRequestForm-compatible payload
     data = {
@@ -95,7 +97,7 @@ async def current_user(request: Request):
     """
     Forward the request to auth-service with the Authorization header
     """
-    current_user_url = "http://auth-service:8000/users/me"
+    current_user_url = f"{auth_service}/users/me"
 
     # Get the Authorization header from the incoming request
     headers = {}

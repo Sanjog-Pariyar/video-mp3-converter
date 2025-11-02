@@ -12,6 +12,8 @@ interface ProtectedData {
   current_user: User;
 }
 
+const API_URL = "/gateway"
+
 const Dashboard = () => {
   const [currentUser, setCurrentUser] = useState<ProtectedData | null>(null);
   const [mp3Id, setMp3Id] = useState("");
@@ -23,7 +25,7 @@ const Dashboard = () => {
       const token = getToken();
       if (!token) return;
 
-      const res = await fetch("http://localhost:8081/user/me", {
+      const res = await fetch(`${API_URL}/user/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -57,8 +59,7 @@ const Dashboard = () => {
       const token = getToken();
       if (!token) return;
       await axios.post(
-        "http://localhost:8081/media/upload",
-
+        `${API_URL}/media/upload`,
         formData,
         {
           responseType: "blob", // important: tell axios to expect a file
@@ -82,7 +83,7 @@ const Dashboard = () => {
     try {
       const token = getToken();
       const response = await axios.get(
-        `http://localhost:8081/media/download?mp3_fid=${mp3Id}`,
+        `${API_URL}/media/download?mp3_fid=${mp3Id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

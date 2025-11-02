@@ -20,6 +20,8 @@ from app.queue.produce import publish_to_queue
 
 router = APIRouter(prefix='/media', tags=["media"])
 
+auth_service="http://auth-service:8000"
+
 MONGO_URL = settings.MONGO_URL
 client = AsyncIOMotorClient(MONGO_URL)
 db = client["media_db"]
@@ -34,13 +36,12 @@ files_collection = db["files"]
 @router.post("/upload")
 async def upload(
     request: Request,
-    video_file: UploadFile = File(...),
-    uploader: str = Form("anonymous")
+    video_file: UploadFile = File(...)
 ):
     """
     Forward the request to auth-service with the Authorization header
     """
-    current_user_url = "http://auth-service:8000/users/me"
+    current_user_url = f"{auth_service}/users/me"
 
     # Get the Authorization header from the incoming request
     headers = {}
@@ -85,7 +86,7 @@ async def download(request: Request, mp3_fid: str):
     """
     Authenticates via auth-service, then streams audio (MP3) from MongoDB GridFS directly.
     """
-    current_user_url = "http://auth-service:8000/users/me"
+    current_user_url = f"{auth_service}/users/me"
 
     # Forward Authorization header
     headers = {}
