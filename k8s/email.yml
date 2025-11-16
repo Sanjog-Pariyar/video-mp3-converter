@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: email-service
-        image: sanjogpariyar2024/video-to-mp3-EmailService:latest
+        image: sanjogpariyar2024/video-to-mp3-emailservice:latest
         resources:
           requests:
             memory: "512Mi"

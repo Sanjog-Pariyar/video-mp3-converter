@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: auth
-        image: sanjogpariyar2024/video-to-mp3-AuthService:latest
+        image: sanjogpariyar2024/video-to-mp3-authservice:latest
         command: ["bash", "scripts/start.sh"]
         resources:
           requests:

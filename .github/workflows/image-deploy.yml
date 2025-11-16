@@ -43,18 +43,18 @@ jobs:
           context: ./auth-service
           file: ./auth-service/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/video-to-mp3-AuthService:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/video-to-mp3-authservice:latest
       - name: Build and push converter service
         uses: docker/build-push-action@v6
         with:
           context: ./converter-service
           file: ./converter-service/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/video-to-mp3-ConverterService:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/video-to-mp3-converterservice:latest
       - name: Build and push email service
         uses: docker/build-push-action@v6
         with:
           context: ./email-service
           file: ./email-service/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/video-to-mp3-EmailService:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/video-to-mp3-emailservice:latest
