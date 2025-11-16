@@ -18,11 +18,11 @@ spec:
         image: sanjogpariyar2024/video-to-mp3-gateway:latest
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "250m"
+            memory: "128Mi"
+            cpu: "100m"
           limits:
-            memory: "1Gi"
-            cpu: "500m"
+            memory: "256Mi"
+            cpu: "250m"
         envFrom:
           - configMapRef:
               name: gateway-configmap
@@ -45,5 +45,5 @@ kind: ConfigMap
 metadata:
   name: gateway-configmap
 data:
-  MONGO_URL: mongodb://root:example@mongo:27017
-  RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+  MONGO_URL: mongodb://root:example@mongo-service:27017
+  RABBITMQ_URL: amqp://guest:guest@rabbitmq-service:5672/

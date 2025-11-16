@@ -24,7 +24,7 @@ spec:
             cpu: "500m"
         envFrom:
           - configMapRef:
-              name: auth-service-configMap
+              name: auth-configmap
         ports:
         - containerPort: 8000
 ---
@@ -42,10 +42,10 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: auth-service-configMap
+  name: auth-configmap
 data:
   SECRET_KEY: ybLV4-5nkCwys4WoKZ3Wvpclb8AA6q4CU3jT2_OCIAU
-  POSTGRES_SERVER: db
+  POSTGRES_SERVER: postgres-service
   POSTGRES_PORT: "5432"
   POSTGRES_DB: app
   POSTGRES_USER: postgres

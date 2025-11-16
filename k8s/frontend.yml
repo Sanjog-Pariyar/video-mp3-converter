@@ -33,7 +33,6 @@ metadata:
 spec:
   selector:
     app: frontend
-  type: NodePort
   ports:
   - port: 5173
     targetPort: 5173
