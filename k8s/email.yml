@@ -1,21 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gateway-deployment
-  labels:
-    app: gateway
+  name: email-service-deployment
 spec:
   selector:
     matchLabels:
-      app: gateway
+      app: email-service
   template:
     metadata:
       labels:
-        app: gateway
+        app: email-service
     spec:
       containers:
-      - name: gateway
-        image: sanjogpariyar2024/video-to-mp3-gateway:latest
+      - name: email-service
+        image: sanjogpariyar2024/video-to-mp3-EmailService:latest
         resources:
           requests:
             memory: "512Mi"
@@ -23,27 +21,19 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
-        envFrom:
-          - configMapRef:
-              name: gateway-configmap
-        ports:
-          - containerPort: 8081
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: gateway-service
+  name: email-service
 spec:
   selector:
-    app: gateway
-  ports:
-  - port: 8081
-    targetPort: 8081
+    app: email-service
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: gateway-configmap
+  name: converter-service-configMap
 data:
-  MONGO_URL: mongodb://root:example@mongo:27017
+  NODEMAILER_KEY: kgia xwgg yuyl kfzg
   RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
