@@ -15,8 +15,8 @@ app.add_middleware(
 )
 
 
-app.include_router(auth.router)
-app.include_router(queue.router)
+app.include_router(auth.router, prefix="/gateway")
+app.include_router(queue.router, prefix="/gateway")
 
 @app.get("/")
 def read_root():

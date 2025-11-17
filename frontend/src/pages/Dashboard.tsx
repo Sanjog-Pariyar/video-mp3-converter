@@ -12,7 +12,7 @@ interface ProtectedData {
   current_user: User;
 }
 
-const API_URL = "/user"
+const API_URL = "/gateway"
 
 const Dashboard = () => {
   const [currentUser, setCurrentUser] = useState<ProtectedData | null>(null);
@@ -25,7 +25,7 @@ const Dashboard = () => {
       const token = getToken();
       if (!token) return;
 
-      const res = await fetch(`${API_URL}/me`, {
+      const res = await fetch(`${API_URL}/user/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
