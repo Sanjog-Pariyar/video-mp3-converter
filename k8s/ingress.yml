@@ -16,7 +16,7 @@ spec:
             name: frontend-service
             port: 
               number: 5173
-      - path: /gateway
+      - path: /user
         pathType: Prefix
         backend:
           service:

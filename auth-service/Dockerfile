@@ -26,5 +26,4 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-# Run FastAPI in dev mode
-# CMD ["fastapi", "dev", "app/main.py", "--host", "0.0.0.0", "--port", "8000"]
+CMD [ "bash", "scripts/start.sh" ]

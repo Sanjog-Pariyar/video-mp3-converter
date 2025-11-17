@@ -22,3 +22,5 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 # Copy your app
 COPY . .
+
+CMD ["python", "-u", "-m", "app.queues.consume"]

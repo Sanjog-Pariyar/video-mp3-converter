@@ -1,4 +1,4 @@
-const API_URL = "/gateway";
+const API_URL = "/user";
 
 export interface LoginResponse {
   access_token: string;
@@ -11,7 +11,7 @@ export const login = async (
   const formData = new URLSearchParams();
   formData.append("email", email);
   formData.append("password", password);
-  const res = await fetch(`${API_URL}/user/login`, {
+  const res = await fetch(`${API_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: formData.toString()
@@ -37,7 +37,7 @@ export const test = async () => {
 };
 
 export const register = async (email: string, password: string) => {
-  const res = await fetch(`${API_URL}/user/register`, {
+  const res = await fetch(`${API_URL}/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
